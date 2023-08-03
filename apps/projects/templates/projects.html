@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block page_h1 %}Projects{% endblock page_h1 %}
+
+{% block main_content %}
+    {% for project in projects %}
+        <div class="col-12 col-md-4 mb-4">
+            <div class="card w-100 h-100 project-card">
+                <a href="{{ project.get_absolute_url }}" class="project-logo">
+                    {% if project.logo %}
+                        <img src="{{ project.logo.url }}" class="card-img-top" alt="...">
+                    {% else %}
+                        <span class="default-img-project">
+                            <i class="bi bi-building"></i>
+                        </span>
+                    {% endif %}
+                </a>
+                <div class="card-body">
+                    <h5 class="card-title">{{ project }}</h5>
+                </div>
+                <span class="modal-btn update-project" onclick="">
+                    <a href="{% url 'update_location' project.id %}"><i class="bi bi-hammer"></i></a>
+                </span>
+                <div class="modal-btn remove-project">
+                    <button type="button" data-bs-toggle="modal" data-bs-target="#delProject-{{ project.pk }}">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+    {% endfor %}
+
+    <div class="col-12 col-md-4 mb-4" id="creteLocationBtn">
+        <div class="card w-100 h-100 project-card add-project-card ">
+            <a href="{% url 'create_location' %}">
+                <i class="bi bi-file-earmark-plus"></i>
+            </a>
+        </div>
+    </div>
+
+{% endblock main_content %}
+
+{% block modals %}
+    {% for project in projects %}
+        <!-- Modal -->
+        <div class="modal fade" id="delProject-{{ project.pk }}" data-bs-backdrop="static" data-bs-keyboard="false"
+             tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirm delete</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete <strong>"{{ project }}"</strong>?
+                    </div>
+                    <form action="{% url 'destroy_project' project.pk %}" method="post" id="formDel-{{ project.pk }}">
+                        {% csrf_token %}
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" form="formDel-{{ project.pk }}">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    {% endfor %}
+{% endblock modals %}

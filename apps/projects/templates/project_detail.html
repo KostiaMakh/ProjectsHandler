@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+
+    <h1 class="node-title">
+        {{ project }}
+    </h1>
+
+    <div class="accordion mb-4" id="accordionPanelsStayOpenExample">
+        {% for node in project.nodes.all %}
+
+            <div class="accordion-item">
+                <h2 class="accordion-header colapse-btn" id="panelsStayOpen-heading{{ node.slug }}">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapse{{ node.slug }}" aria-expanded="true"
+                            aria-controls="panelsStayOpen-collapse{{ node.slug }}">
+                        {{ node }}
+                    </button>
+                </h2>
+                <div id="panelsStayOpen-collapse{{ node.slug }}" class="accordion-collapse collapse show"
+                     aria-labelledby="panelsStayOpen-heading{{ node.slug }}">
+                    <div class="accordion-body">
+                        <div class="equipment-list row">
+                            <div class="col-2 table-head">Pos.</div>
+                            <div class="col-1 table-head">Num, pcs</div>
+                            <div class="col-3 table-head">Mark</div>
+                            <div class="col-2 table-head">Power, kw</div>
+                            <div class="col-2 table-head">Weight, kg</div>
+                            <div class="col-2 table-head">Price, USD</div>
+                        </div>
+
+                        {% for position in positions_list %}
+                            {% if position.technological_node.slug == node.slug %}
+                                <div class="equipment-list row equipment-position-row">
+                                    <div class="col-2">{{ position.name }}</div>
+                                    <div class="col-1">{{ position.quantity }}</div>
+                                    {% if position.equipment %}
+                                        <div class="col-3 equipment-line">
+                                            <a href="{{ position.equipment.get_absolute_url }}">{{ position.equipment.name }}</a>
+
+                                            <form action="{% url 'remove_equipment' position.equipment.pk %}" method="post" id="remove-eq-{{ position.equipment.pk }}">
+                                                {% csrf_token %}
+                                            </form>
+
+                                            <button type="submit" form="remove-eq-{{ position.equipment.pk }}"
+                                                    title="Delete equipment"><i class="bi bi-trash3"></i></button>
+                                        </div>
+                                        <div class="col-2">{{ position.equipment.power }}</div>
+                                        <div class="col-2">{{ position.equipment.weight }}</div>
+                                        <div class="col-1">{{ position.equipment.price }}</div>
+
+                                    {% else %}
+                                        <div class="col-3">
+                                            <div class="add-equipment">
+                                                <a href="{% url 'create_equipment' position.id %}" title="Add equipment"><i
+                                                        class="bi bi-node-plus"></i></a>
+                                            </div>
+                                        </div>
+                                        <div class="col-2"></div>
+                                        <div class="col-2"></div>
+                                        <div class="col-1"></div>
+                                    {% endif %}
+                                    <div class="col-1">
+                                        <form action="{% url 'destroy_position' position.pk %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-destroy-position"><i
+                                                    class="bi bi-x-lg" title="Delete position"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            {% endif %}
+                        {% endfor %}
+                        <div class="col-12 add-position">
+                            <button class="btn btn-primary" data-bs-target="#CreatePosModal{{ node.pk }}"
+                                    data-bs-toggle="modal" title="Add position">
+                                <i class="bi bi-plus-lg"></i></button>
+                        </div>
+                        {% include 'inc/create_position.html' with node=node %}
+                    </div>
+                </div>
+
+            </div>
+        {% endfor %}
+    </div>
+    <div class="col-12">
+        <div id="addNode">
+            <button data-bs-target="#addNodeModal" data-bs-toggle="modal">Add Node</button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addNodeModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2"
+         tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="exampleModalToggleLabel2">Add node form</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id='addNodeForm' method="post" action="{% url 'create_node' %}" enctype="multipart/form-data"
+                          data-ajax="false">
+                        {% csrf_token %}
+                        {% if form.name.errors %}
+                            <div class="text-danger">
+                                {{ form.name.errors }}
+                            </div>
+                        {% endif %}
+                        <input type="text" name="name" class="form-control mb-3" placeholder="Name">
+
+                        {% if form.node_number.errors %}
+                            <div class="text-danger">
+                                {{ form.node_number.errors }}
+                            </div>
+                        {% endif %}
+                        <input type="text" name="node_number" class="form-control mb-3" placeholder="Node number">
+
+                        {% if form.node_number.errors %}
+                            <div class="text-danger">
+                                {{ form.node_number.errors }}
+                            </div>
+                        {% endif %}
+                        <input type="hidden" name="location" class="form-control mb-3" value="{{ project.pk }}">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" form="addNodeForm" class="btn btn-primary"
+                            data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Create node
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock main_content %}

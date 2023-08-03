@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+
+    <div class="col-12 col-sm-6 offset-sm-3 border-with-shadow">
+        <h1 class="mb-4 text-center">Create equipment</h1>
+        <form id='CreateEquipmentForm' method="post"
+              enctype="multipart/form-data"
+              data-ajax="false">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+        <button type="submit" form="CreateEquipmentForm"
+                class="btn btn-primary"
+                data-bs-target="#exampleModalToggle"
+                data-bs-toggle="modal">Create equipment
+        </button>
+    </div>
+
+{% endblock main_content %}
+
+
+
+
+
+
+
+
+
+

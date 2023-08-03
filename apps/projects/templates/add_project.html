@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block page_h1 %}Create location form{% endblock page_h1 %}
+
+
+{% block main_content %}
+
+    <div class="col-12 col-sm-6 offset-sm-3 create-form">
+        <form method="post" enctype="multipart/form-data" data-ajax="false" id="createObjectForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+        <button type="submit" class="col-12 mt-3 btn btn-primary" form="createObjectForm">Create Location</button>
+    </div>
+
+
+{% endblock main_content %}

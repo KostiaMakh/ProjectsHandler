@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block page_h1 %}Create manufacture{% endblock page_h1 %}
+
+{% block main_content %}
+
+    <div class="col-12 col-md-6 offset-md-3 create-form">
+        <form method='post' id="createManufactureForm">
+            {% csrf_token %}
+            {{ form.as_p }}
+        </form>
+        <button type="submit" form="createManufactureForm" class="btn btn-primary w-100">
+            Create manufacture
+        </button>
+    </div>
+
+{% endblock main_content %}

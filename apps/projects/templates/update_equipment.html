@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+<h1>{% block page_h1 %}{{ position.name }}{% endblock page_h1 %}</h1>
+
+{% block main_content %}
+
+    <div class="col-4 col-params"><strong>Parameter name</strong></div>
+    <div class="col-8 col-value"><strong>Value</strong></div>
+
+    <div class="col-4 col-params">Location</div>
+    <div class="col-8 col-value">{{ position.position.technological_node.location }}</div>
+
+    <div class="col-4 col-params">Technological node</div>
+    <div class="col-8 col-value">{{ position.position.technological_node }}</div>
+
+    <div class="col-4 col-params">Equipment position</div>
+    <div class="col-8 col-value">{{ position.position.name }}</div>
+
+    <form class="row m-0 p-0" method="post" id="updateForm">
+        {% csrf_token %}
+        <div class="col-4 col-params">Type</div>
+        <div class="col-8 col-value p-1">
+            <select name="type" class="form-control">
+                {% for type in equipment_type %}
+                    <option value="{{ type.0 }}" {% if type.0 == position.type %}selected{% endif %}>{{ type.1 }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-4 col-params">Equipment mark</div>
+        <div class="col-8 col-value p-1">
+            <input name="name" class="form-control" value="{{ position.name }}">
+        </div>
+
+        <div class="col-4 col-params">Weight, kg</div>
+        <div class="col-8 col-value p-1">
+            <input name="weight" class="form-control" value="{{ position.weight }}">
+        </div>
+
+        <div class="col-4 col-params">Power, kw</div>
+        <div class="col-8 col-value p-1">
+            <input name="power" class="form-control" value="{{ position.power }}">
+        </div>
+
+        <div class="col-4 col-params">Price, USD without VAT</div>
+        <div class="col-8 col-value p-1">
+            <input name="price" class="form-control" value="{{ position.price }}">
+        </div>
+
+        <div class="col-4 col-params">Manufacture</div>
+        <div class="col-8 col-value p-1">
+            <select name="manufacture" class="form-control">
+                {% for manufacture in manufactures %}
+                    <option value="{{ manufacture.pk }}" {% if position.manufacture.pk == manufacture.pk %}selected{% endif %}>{{ manufacture }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+
+    <h2 class="text-center mb-3 mt-3">Complectation</h2>
+        <div class="col-4 col-params">Control panel</div>
+        <div class="col-8 col-value">
+            <input type="checkbox" name="control_panel" class="d-block"{% if position.complectation.control_panel %}
+                   checked{% endif %}>
+        </div>
+        <div class="col-4 col-params">Local control panel</div>
+        <div class="col-8 col-value">
+            <input type="checkbox" name="local_control_panel" class="d-block"
+                    {% if position.complectation.local_control_panel %}
+                   checked{% endif %}>
+        </div>
+        <div class="col-4 col-params">Mounting kit</div>
+        <div class="col-8 col-value">
+            <input type="checkbox" name="mounting_kit" class="d-block"{% if position.complectation.mounting_kit %}
+                   checked{% endif %}>
+        </div>
+        <div class="col-4 col-params">Startup works</div>
+        <div class="col-8 col-value">
+            <input type="checkbox" name='startup_works' class="d-block"{% if position.complectation.startup_works %}
+                   checked{% endif %}>
+        </div>
+    </form>
+
+    <button type="submit" class="btn btn-primary mt-4" form="updateForm">Save</button>
+
+
+{% endblock main_content %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block main_content %}
+
+    <form method="post" enctype="multipart/form-data" data-ajax="false">
+        {% csrf_token %}
+        {% if form.name.errors %}
+            <div class="text-danger">
+                {{ form.name.errors }}
+            </div>
+        {% endif %}
+        <input type="text" name="name" class="form-control mb-3" placeholder="Name">
+
+        {% if form.node_number.errors %}
+            <div class="text-danger">
+                {{ form.node_number.errors }}
+            </div>
+        {% endif %}
+        <input type="text" name="node_number" class="form-control mb-3" placeholder="Node number">
+
+        {% if form.node_number.errors %}
+            <div class="text-danger">
+                {{ form.node_number.errors }}
+            </div>
+        {% endif %}
+        <input type="hidden" name="location" class="form-control mb-3" value="{{ location_id }}">
+        <button type="submit"> Create node</button>
+    </form>
+
+{% endblock main_content %}

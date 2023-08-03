@@ -1,0 +1,26 @@
+<div class="modal fade" id="CreatePosModal{{ node.pk }}" aria-hidden="true"
+     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Add position</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'create_position' %}" id="CreatePosition-{{ node.pk }}">
+                    {% csrf_token %}
+                    <input class="form-control mb-2" type="hidden" value="{{ node.pk }}" name="technological_node">
+                    <input class="form-control mb-2" type="text" placeholder="Position" name="name">
+                    <input class="form-control mb-2" type="number" placeholder="Quantity, pcs" name="quantity">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-bs-target="#exampleModalToggle2"
+                        data-bs-toggle="modal" type="submit" form="CreatePosition-{{ node.pk }}">
+                    Add position
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

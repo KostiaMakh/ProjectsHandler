@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+<h1>{% block page_h1 %}Raw SQL{% endblock page_h1 %}</h1>
+
+{% block main_content %}
+    <label for="sqlRequest">SQL query</label>
+    <input class="form-control mb-3 " type="text" id="sqlRequest">
+    <span onclick="getQuery()" class="btn btn-main btn-success mb-3">Get query</span>
+    <div id="result" style="padding:0; display: flex; flex-wrap: wrap; border-top: 1px solid darkgray; border-left: 1px solid darkgray"></div>
+{% endblock main_content %}
+
+{% block extra_scriprts %}
+    <script>
+        function getQuery() {
+            let sql_query = document.getElementById('sqlRequest').value
+            var a = document.cookie.split(';');
+            var token = ''
+            for (i = 0; i < a.length; i++) {
+                var b = a[i].split('=')
+                b[0] = b[0].replace(/\s+/g, '')
+                if (b[0] == 'csrftoken') {
+                    token = b[1]
+                }
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/raw-sql-query/",
+                data: {
+                    "csrfmiddlewaretoken": token,
+                    sql_code: sql_query,
+                },
+                success: function (response) {
+                    let result = document.getElementById('result')
+                    result.innerHTML = ''
+                    console.log('YES')
+                    console.log(response['result'])
+                    console.log(response['headers'])
+                    for(let x= 0; x < response['headers'].length; x++){
+                        result.innerHTML +=`<span style="border-bottom: 2px solid darkgray; border-right: 1px solid darkgray; display: flex; width: ${100 / response['headers'].length}%"><b>${response['headers'][x]}</b></span>`
+                        result.innerHTML +=`<div></div>`
+                    }
+                    for(let x= 0; x < response['result'].length; x++){
+                        for(let y= 0; y < response['result'][x].length; y++){
+                            result.innerHTML +=`<span style="border-bottom: 1px solid darkgray; border-right: 1px solid darkgray; display: flex; width: ${100 / response['result'][x].length}%">${response['result'][x][y]}</span>`
+                        }
+                        result.innerHTML +=`<div></div>`
+                    }
+
+                },
+                error: function (response) {
+                    console.log('NO')
+                },
+            });
+
+        }
+    </script>
+
+{% endblock extra_scriprts %}

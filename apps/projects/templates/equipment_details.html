@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+<h1>{% block page_h1 %}{{ position.name }}{% endblock page_h1 %}</h1>
+
+{% block main_content %}
+
+    <div class="col-4 col-params"><strong>Parameter name</strong></div>
+    <div class="col-8 col-value"><strong>Value</strong></div>
+
+    <div class="col-4 col-params">Location</div>
+    <div class="col-8 col-value">{{ position.position.technological_node.location }}</div>
+
+    <div class="col-4 col-params">Technological node</div>
+    <div class="col-8 col-value">{{ position.position.technological_node }}</div>
+
+    <div class="col-4 col-params">Equipment position</div>
+    <div class="col-8 col-value">{{ position.position.name }}</div>
+
+    <div class="col-4 col-params">Type</div>
+    <div class="col-8 col-value">{{ position.type }}</div>
+
+    <div class="col-4 col-params">Equipment mark</div>
+    <div class="col-8 col-value">{{ position.name }}</div>
+
+    <div class="col-4 col-params">Weight, kg</div>
+    <div class="col-8 col-value">{{ position.weight }}</div>
+
+    <div class="col-4 col-params">Power, kw</div>
+    <div class="col-8 col-value">{{ position.power }}</div>
+
+    <div class="col-4 col-params">Price, USD without VAT</div>
+    <div class="col-8 col-value">{{ position.price }}$</div>
+
+    <div class="col-4 col-params">Manufacture</div>
+    <div class="col-8 col-value">{{ position.manufacture }}</div>
+
+    <h2 class="text-center mb-3 mt-3">Complectation</h2>
+    <div class="col-4 col-params">Control panel</div>
+    <div class="col-8 col-value">{% if position.complectation.control_panel %}Yes{% else %}No{% endif %}</div>
+    <div class="col-4 col-params">Local control panel</div>
+    <div class="col-8 col-value">{% if position.complectation.local_control_panel %}Yes{% else %}No{% endif %}</div>
+    <div class="col-4 col-params">Mounting kit</div>
+    <div class="col-8 col-value">{% if position.complectation.mounting_kit %}Yes{% else %}No{% endif %}</div>
+    <div class="col-4 col-params">Startup works</div>
+    <div class="col-8 col-value">{% if position.complectation.startup_works %}Yes{% else %}No{% endif %}</div>
+
+    <a href="{% url 'equipment_update' position.slug %}" class="btn btn-primary mt-4">Update equipment details</a>
+
+{% endblock main_content %}

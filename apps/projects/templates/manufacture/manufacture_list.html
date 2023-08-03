@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block page_h1 %}Manufactures{% endblock page_h1 %}
+
+{% block main_content %}
+    {% for manufacture in manufactures %}
+
+        <div class="col-12 col-md-6 col-lg-4 mb-3">
+            <div class="manufac-card">
+                <a href="{% url 'manufacture_details' manufacture.pk %}">
+                    <h3>{{ manufacture.name }}</h3>
+                </a>
+                <button type="button" data-bs-toggle="modal" data-bs-target="#removeMan-{{ manufacture.pk }}" class="btn-delete-man">
+                    <i class="bi bi-trash3"></i>
+                </button>
+                </button>
+            </div>
+        </div>
+
+    {% endfor %}
+
+    <div class="col-12 col-md-6 col-lg-4 mb-3">
+        <div class="manufac-card">
+            <a href="{% url 'manufacture_create' %}">
+                <i class="bi bi-plus-circle-dotted"></i>
+            </a>
+        </div>
+    </div>
+
+{% endblock main_content %}
+
+
+{% block modals %}
+
+    {% for manufacture in manufactures %}
+        <div class="modal fade" id="removeMan-{{ manufacture.pk }}" data-bs-backdrop="static" data-bs-keyboard="false"
+             tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5">Confirm delete</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete <strong>"{{ manufacture }}"</strong>?
+                    </div>
+                    <form action="{% url 'destroy_manufacture' manufacture.pk %}" method="post"
+                          id="formDel-{{ manufacture.pk }}">
+                        {% csrf_token %}
+                    </form>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger" form="formDel-{{ manufacture.pk }}">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock modals %}
