@@ -36,8 +36,8 @@ jobs:
       - name: Deploy to EB
         uses: einaregilsson/beanstalk-deploy@v14
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID_2 }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_2 }}
           application_name: NEW-TEST
           environment_name: NEW-TEST-env
           version_label: "the-simple-engineer-deployment-${{ steps.format-time.outputs.replaced }}"
