@@ -35,7 +35,7 @@ services:
       - "8080:8080"
 
   nginx:
-    build: deploy_config/nginx
+    build: nginx
     ports:
       - 8000:80
     depends_on:
