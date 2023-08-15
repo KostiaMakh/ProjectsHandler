@@ -1,0 +1,46 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy tester
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: 
+      - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout latest repo
+        uses: actions/checkout@main
+        
+      - name: Generate Deployment Packege
+        run: zip -r deploy12.zip * -x "**node_modules**"
+
+      - name: Get timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+        
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: "${{ steps.current-time.outputs.time }}"
+          replace-with: '-'
+          flags: 'g'
+          
+      - name: Deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v14
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID_2 }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY_2 }}
+          application_name: NEW-TEST
+          environment_name: NEW-TEST-env
+          version_label: "the-simple-engineer-deployment-${{ steps.format-time.outputs.replaced }}-85"
+          region: ap-southeast-2
+          deployment_package: deploy12.zip
+          
