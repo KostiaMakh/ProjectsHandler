@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
   web:
@@ -6,40 +6,26 @@ services:
     restart: always
     volumes:
       - .:/ecopol
-    command: gunicorn ecopol.wsgi:application --bind 0.0.0.0:8000
-    expose:
-      - 8000
-    env_file:
-      - .env
-    depends_on:
-      - db
-
-
-  db:
-    image: postgres:14.0
-    healthcheck:
-      test: pg_isready -U ${POSTGRES_USER} || exit 1
-    volumes:
-      - ecopol_db:/var/lib/postgresql/data
-    restart: on-failure
-    env_file:
-      - .env
-    expose:
-      - 5432
-
-
-  adminer:
-    image: adminer
-    restart: always
+#    command: gunicorn ecopol.wsgi:application --bind 0.0.0.0:8000
+#    expose:
+#      - 8000
     ports:
-      - "8080:8080"
+      - "8000:8000"
+    env_file:
+      - .env
 
   nginx:
-    build: nginx
+    build: ./nginx
     ports:
-      - 8000:80
+      - "90:90"
+#      - 8000:80
     depends_on:
       - web
+    volumes:
+      - static_vol:/ecopol/static
+      - media_vol:/ecopol/media
 
 volumes:
   ecopol_db:
+  static_vol:
+  media_vol:
