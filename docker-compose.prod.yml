@@ -7,10 +7,10 @@ services:
     volumes:
       - .:/ecopol
 #    command: gunicorn ecopol.wsgi:application --bind 0.0.0.0:8000
-#    expose:
-#      - 8000
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
+#    ports:
+#      - "8000:8000"
     env_file:
       - .env
 
@@ -22,10 +22,11 @@ services:
     depends_on:
       - web
     volumes:
+      - nginx_network
       - static_vol:/ecopol/static
       - media_vol:/ecopol/media
 
 volumes:
-  ecopol_db:
+  nginx_network:
   static_vol:
   media_vol:
