@@ -1,3 +1,43 @@
+#version: '3'
+#
+#services:
+#  web:
+#    build: .
+#    restart: always
+#    command: sh -c "python3 manage.py collectstatic --noinput &&
+#                    python3 manage.py migrate &&
+#                    gunicorn ecopol.wsgi -c deploy_config/gunicorn.cfg --reload"
+#    volumes:
+#      - static_vol:/ecopol/static
+#      - media_vol:/ecopol/media
+#    expose:
+#      - 8000
+#    env_file:
+#      - .env
+#    networks:
+#      - nginx_network
+#
+#  nginx:
+#    build: ./nginx
+#    ports:
+#      - "80:80"
+#    depends_on:
+#      - web
+#    volumes:
+#      - nginx_network:/ecopol/nginx
+#      - static_vol:/ecopol/static
+#      - media_vol:/ecopol/media
+#    networks:
+#      - nginx_network
+#
+#volumes:
+#  nginx_network:
+#  static_vol:
+#  media_vol:
+
+
+
+
 version: '3'
 
 services:
@@ -7,23 +47,28 @@ services:
     volumes:
       - static_vol:/ecopol/static
       - media_vol:/ecopol/media
-    ports:
-      - "8000:8000"
+    expose:
+      - 8000
     env_file:
       - .env
+    networks:
+      - nginx_network
 
   nginx:
     build: ./nginx
     ports:
-      - "80:80"
+      - "90:90"
     depends_on:
       - web
     volumes:
-      - nginx_network:/ecopol/nginx
       - static_vol:/ecopol/static
       - media_vol:/ecopol/media
+    networks:
+      - nginx_network
 
 volumes:
-  nginx_network:
   static_vol:
   media_vol:
+
+networks:
+    nginx_network:
