@@ -45,8 +45,9 @@ services:
     build: .
     restart: always
     volumes:
-      - static_vol:/ecopol/static
-      - media_vol:/ecopol/media
+      - .:/ecopol
+      - ./static:/ecopol/static
+    entrypoint: ./entrypoint.sh
     expose:
       - 8000
     env_file:
@@ -55,20 +56,18 @@ services:
       - nginx_network
 
   nginx:
-    build: ./nginx
+    image: nginx:1.15.9
     ports:
       - "90:90"
+#      - "443:443"
     depends_on:
       - web
     volumes:
-      - static_vol:/ecopol/static
-      - media_vol:/ecopol/media
+      - "./deploy_config/nginx/staging:/etc/nginx/conf.d"
+      - "./static:/ecopol/static"
+      - /etc/letsencrypt:/etc/letsencrypt:ro
     networks:
       - nginx_network
-
-volumes:
-  static_vol:
-  media_vol:
 
 networks:
     nginx_network:
