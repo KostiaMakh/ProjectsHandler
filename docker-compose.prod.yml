@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.8'
 
 services:
   web:
@@ -6,11 +6,9 @@ services:
     restart: always
     volumes:
       - .:/ecopol
-    command: sh -c "python3 manage.py collectstatic --noinput &&
-                    python3 manage.py migrate &&
-                    python3 manage.py runserver 0.0.0.0:8000"
-    ports:
-      - "8000:8000"
+    command: gunicorn ecopol.wsgi:application --bind 0.0.0.0:8000
+    expose:
+      - 8000
     env_file:
       - .env
     depends_on:
@@ -36,6 +34,12 @@ services:
     ports:
       - "8080:8080"
 
+  nginx:
+    build: deploy_config/nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - web
 
 volumes:
   ecopol_db:

@@ -34,7 +34,7 @@ SECRET_KEY = env.str('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.str('DEBUG')
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', ]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '*', ]
 
 LOGIN_REDIRECT_URL = reverse_lazy('projects_list')
 LOGOUT_REDIRECT_URL = reverse_lazy('login')

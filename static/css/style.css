@@ -1,9 +1,330 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
 body {
   background-color: whitesmoke;
 }
 
 .main-content-sec {
   padding-top: 40px;
+}
+
+.project-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+.project-card .card-body {
+  flex: initial;
+}
+.project-card:hover {
+  transform: scale(1.05);
+  transition: 400ms;
+}
+.project-card a {
+  text-decoration: none;
+  color: dimgray;
+}
+
+.update-project {
+  top: 12px;
+}
+.update-project:hover {
+  background-color: #5dba5d;
+}
+.update-project:hover i {
+  color: white;
+}
+
+.remove-project {
+  top: 68px;
+}
+.remove-project:hover {
+  background-color: #ff342a;
+}
+
+.modal-btn {
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  border: 1px solid lightgray;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 12px;
+}
+.modal-btn button {
+  background-color: transparent;
+  border: none;
+}
+.modal-btn:hover {
+  transform: scale(1.05);
+  transition: 400ms;
+  color: white;
+}
+.modal-btn:hover button {
+  color: white;
+}
+
+.project-logo {
+  max-height: 300px;
+  overflow: hidden;
+}
+.project-logo img {
+  width: 100%;
+}
+
+.node-title {
+  display: block;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.equipment-list {
+  padding-left: 50px;
+}
+
+.equipment-position {
+  padding: 6px;
+  border-bottom: 1px solid lightgray;
+}
+
+.table-head {
+  font-style: italic;
+  color: dimgray;
+  margin-bottom: 20px;
+  border-bottom: solid 1px lightgray;
+}
+
+.equipment-position-row {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  border: 1px solid transparent;
+}
+.equipment-position-row:hover {
+  transform: translateX(2px);
+  background-color: rgba(230, 230, 230, 0.15);
+  border-radius: 2px;
+  border: 1px solid lightgray;
+  transition: 400ms;
+}
+
+.add-position {
+  margin-top: 30px;
+  padding: 0 0 0 50px;
+}
+.add-position button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: dimgray;
+  width: 100%;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  background-color: rgba(230, 230, 230, 0.25);
+  padding: 3px;
+}
+
+.add-project-card {
+  min-height: 300px;
+}
+
+.default-img-project {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: dimgray;
+}
+.default-img-project i {
+  font-size: 130px;
+  height: 120px;
+  width: 120px;
+}
+
+#addNode {
+  padding: 0;
+}
+#addNode button {
+  box-shadow: -4px 10px 9px 0px rgba(115, 114, 115, 0.41);
+  border: 1px solid grey;
+  border-radius: 6px;
+  background-color: white;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+  padding: 6px;
+  text-decoration: none;
+  color: dimgray;
+  font-weight: bold;
+}
+#addNode button:hover {
+  color: white;
+  transform: translateX(-2px) translateY(2px);
+  background-color: dimgray;
+  box-shadow: none;
+  transition: 400ms;
+}
+
+.btn-destroy-position {
+  border: none;
+  background-color: transparent;
+  color: #ff342a;
+}
+
+#creteLocationBtn a {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+}
+#creteLocationBtn a i {
+  height: 150px;
+  width: 150px;
+  font-size: 150px;
+  position: relative;
+  top: -40px;
+}
+
+.equipment-line {
+  display: flex;
+  position: relative;
+}
+.equipment-line a {
+  color: black;
+}
+.equipment-line i {
+  position: relative;
+  top: -4px;
+  right: 4px;
+}
+.equipment-line button {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  top: 50%;
+  right: 11px;
+  margin-top: -10px;
+  background-color: transparent;
+  border: none;
+  color: red;
+}
+
+.manufac-card {
+  position: relative;
+  background-color: white;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  box-shadow: -4px 10px 9px 0px rgba(115, 114, 115, 0.41);
+}
+.manufac-card:hover {
+  transform: scale(1.03);
+  transition: 400ms;
+}
+.manufac-card a {
+  height: 50px;
+  color: dimgray;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+}
+.manufac-card h3 {
+  margin: 0;
+}
+.manufac-card i {
+  font-size: 30px;
+}
+
+.create-form {
+  padding: 30px 15px;
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  box-shadow: -4px 10px 9px 0px rgba(115, 114, 115, 0.41);
+}
+.create-form form {
+  margin-bottom: 30px;
+}
+
+.btn-delete-man {
+  position: absolute;
+  height: 24px;
+  width: 24px;
+  top: 50%;
+  margin-top: -15px;
+  right: 20px;
+  background-color: transparent;
+  border: none;
+}
+.btn-delete-man i {
+  color: dimgray;
+  font-size: 22px;
+}
+.btn-delete-man:hover i {
+  color: #ff342a;
+}
+
+.col-params {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-right: 1px solid white;
+  border-bottom: 1px solid white;
+  background-color: #dedede;
+}
+
+.col-value {
+  padding: 8px 12px;
+  border-bottom: 1px solid lightgray;
+}
+
+.border-with-shadow {
+  box-shadow: -4px 10px 9px 0px rgba(115, 114, 115, 0.41);
+  border: 1px solid lightgray;
+  border-radius: 6px;
+  padding: 20px 30px 30px;
+}
+
+.add-equipment a {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  border: 3px rgba(96, 190, 96, 0.7) dotted;
+  border-radius: 3px;
+  background-color: rgba(96, 190, 96, 0.18);
+}
+.add-equipment a i {
+  color: grey;
+}
+
+#headerBlock {
+  position: relative;
+}
+#headerBlock #logoutBtn {
+  height: 30px;
+  width: 30px;
+  position: absolute;
+  top: 50%;
+  margin-top: -15px;
+  right: 30px;
+  text-decoration: none;
+  color: grey;
+  padding: 0;
+}
+#headerBlock #logoutBtn i {
+  font-size: 20px;
+}
+#headerBlock #logoutBtn:hover {
+  transform: scale(1.05);
+  color: #0d6efd;
+  transition: 400ms;
 }
 
 /*# sourceMappingURL=style.css.map */
