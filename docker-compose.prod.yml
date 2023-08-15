@@ -19,6 +19,7 @@ services:
     depends_on:
       - web
     volumes:
+      - nginx_network:/ecopol/nginx
       - static_vol:/ecopol/static
       - media_vol:/ecopol/media
 
