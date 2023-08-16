@@ -10,6 +10,9 @@ services:
                     gunicorn ecopol.wsgi:application --bind 0.0.0.0:8000"
     expose:
       - 8000
+    volumes:
+        - static_volume:/home/app/web/static
+        - media_volume:/home/app/web/media
     env_file:
       - .env
 
@@ -17,8 +20,8 @@ services:
   nginx:
     build: ./nginx
     volumes:
-      - static_volume:/home/app/web/staticfiles
-      - media_volume:/home/app/web/mediafiles
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
     ports:
       - 80:80
     depends_on:
