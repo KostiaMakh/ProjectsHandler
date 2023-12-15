@@ -22,10 +22,14 @@ from .views import (
     EquipmentUpdateView,
     RawSqlView,
     RawSqlQuery,
+    StatisticView,
+    ProjectsSpecificationView,
+    ProjectsPriceView,
 
 )
 
 urlpatterns = [
+    path('statistic/', StatisticView.as_view(), name='statistic'),
     path('raw-sql/', RawSqlView.as_view(), name='raw_sql'),
     path('raw-sql-query/', RawSqlQuery.as_view(), name='raw_sql-query'),
     path('create-position/', CreatePositionView.as_view(), name='create_position'),
@@ -45,8 +49,8 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('<str:slug>/', ProjectsDetailsView.as_view(), name='project_details'),
+    path('<str:slug>/specifcation/', ProjectsSpecificationView.as_view(), name='project_specification'),
+    path('<str:slug>/price/', ProjectsPriceView.as_view(), name='project_price'),
     path('position/<str:slug>/', EquipmentDetailsView.as_view(), name='equipment_details'),
     path('position-update/<str:slug>/', EquipmentUpdateView.as_view(), name='equipment_update'),
-
-
 ]

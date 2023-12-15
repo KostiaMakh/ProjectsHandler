@@ -5,6 +5,11 @@
     <h1 class="node-title">
         {{ project }}
     </h1>
+    
+    <div class="d-flex justify-content-center mb-4">
+        <a class="btn btn-success" style="margin-right: 16px" href="{% url 'project_specification' project.slug %}">Specification</a>
+        <a class="btn btn-success" href="{% url 'project_price' project.slug %}">Price</a>
+    </div>
 
     <div class="accordion mb-4" id="accordionPanelsStayOpenExample">
         {% for node in project.nodes.all %}
@@ -24,9 +29,10 @@
                             <div class="col-2 table-head">Pos.</div>
                             <div class="col-1 table-head">Num, pcs</div>
                             <div class="col-3 table-head">Mark</div>
-                            <div class="col-2 table-head">Power, kw</div>
-                            <div class="col-2 table-head">Weight, kg</div>
-                            <div class="col-2 table-head">Price, USD</div>
+                            <div class="col-1 table-head">Power, kw</div>
+                            <div class="col-1 table-head">Weight, kg</div>
+                            <div class="col-1 table-head">Price, USD</div>
+                            <div class="col-2 table-head">Status</div>
                         </div>
 
                         {% for position in positions_list %}
@@ -38,28 +44,35 @@
                                         <div class="col-3 equipment-line">
                                             <a href="{{ position.equipment.get_absolute_url }}">{{ position.equipment.name }}</a>
 
-                                            <form action="{% url 'remove_equipment' position.equipment.pk %}" method="post" id="remove-eq-{{ position.equipment.pk }}">
+                                            <form action="{% url 'remove_equipment' position.equipment.pk %}"
+                                                  method="post"
+                                                  id="remove-eq-{{ position.equipment.pk }}">
                                                 {% csrf_token %}
                                             </form>
 
                                             <button type="submit" form="remove-eq-{{ position.equipment.pk }}"
                                                     title="Delete equipment"><i class="bi bi-trash3"></i></button>
                                         </div>
-                                        <div class="col-2">{{ position.equipment.power }}</div>
-                                        <div class="col-2">{{ position.equipment.weight }}</div>
+                                        <div class="col-1">{{ position.equipment.power }}</div>
+                                        <div class="col-1">{{ position.equipment.weight }}</div>
                                         <div class="col-1">{{ position.equipment.price }}</div>
 
                                     {% else %}
                                         <div class="col-3">
                                             <div class="add-equipment">
-                                                <a href="{% url 'create_equipment' position.id %}" title="Add equipment"><i
+                                                <a href="{% url 'create_equipment' position.id %}"
+                                                   title="Add equipment"><i
                                                         class="bi bi-node-plus"></i></a>
                                             </div>
                                         </div>
-                                        <div class="col-2"></div>
-                                        <div class="col-2"></div>
+                                        <div class="col-1"></div>
+                                        <div class="col-1"></div>
                                         <div class="col-1"></div>
                                     {% endif %}
+                                    <div class="col-2">
+                                        <span style="font-size: 12px"
+                                              class="btn {% if position.status == 'done' %}btn-success{% else %}btn-danger{% endif %} p-1">{{ position.get_status_display }}</span>
+                                    </div>
                                     <div class="col-1">
                                         <form action="{% url 'destroy_position' position.pk %}" method="post">
                                             {% csrf_token %}

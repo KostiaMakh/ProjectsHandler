@@ -28,18 +28,17 @@
 {% block before_content %}{% endblock before_content %}
 
 <section class="main-content-sec">
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-12 mb-4 text-center">
                 <h1>{% block page_h1 %}{% endblock page_h1 %}</h1>
             </div>
-
-            {% block main_content %}{% endblock main_content %}
-
         </div>
+        {% block main_content %}{% endblock main_content %}
     </div>
 
 </section>
+
 
 <div id="extraModals">
     {% block modals %}{% endblock modals %}

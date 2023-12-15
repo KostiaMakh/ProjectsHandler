@@ -100,6 +100,7 @@ class Equipment(models.Model):
     power = models.FloatField(default=0)
     manufacture = models.ForeignKey(Manufacture, on_delete=models.PROTECT, null=True)
     complectation = models.OneToOneField(Complectation, on_delete=models.CASCADE, related_name='equipment', null=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Equipment'
@@ -118,12 +119,21 @@ class Equipment(models.Model):
 
 
 class Position(models.Model):
+    DONE = 'done'
+    NOT_STARTED = 'not_started'
+
+    STATUS_CHOICES = (
+        (DONE, 'Done'),
+        (NOT_STARTED, 'Not started')
+    )
+
     slug = models.SlugField(blank=True)
     name = models.CharField(max_length=255)
     quantity = models.PositiveIntegerField(default=1)
     is_active = models.BooleanField(default=True)
     equipment = models.OneToOneField(Equipment, on_delete=models.SET_NULL, related_name='position', null=True)
-    technological_node = models.ForeignKey(TechnologicalNode, on_delete=models.CASCADE)
+    technological_node = models.ForeignKey(TechnologicalNode, on_delete=models.CASCADE, related_name='positions')
+    status = models.CharField(max_length=128, choices=STATUS_CHOICES, default=NOT_STARTED)
 
     class Meta:
         verbose_name = 'Position'

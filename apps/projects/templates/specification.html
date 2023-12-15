@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% load equipment_types %}
+
+{% block page_h1 %}{{ project }} project specification{% endblock page_h1 %}
+
+{% block main_content %}
+
+    <div class="row table-head">
+        <div class="col-3">Position</div>
+        <div class="col-3">Mark</div>
+        <div class="col-2">Quantity, pcs</div>
+        <div class="col-2">Power, kW</div>
+        <div class="col-2">weight, kg</div>
+    </div>
+    {% for node in technological_nodes %}
+        <div class="row node-line">
+            <div class="col-6"><b>{{ node }}</b></div>
+            <div class="col-2"><b>{{ node.quantity_total|default:'-' }}</b></div>
+            <div class="col-2"><b>{{ node.power_total|floatformat:2|default:'-' }}</b></div>
+            <div class="col-2"><b>{{ node.weight_total|default:'-' }}</b></div>
+        </div>
+        {% for position in node.positions.all %}
+            <div class="row bg-white">
+                <div class="col-3">{{ position.name|default:'-' }}</div>
+                <div class="col-3">{{ position.equipment.name|default:'-' }}</div>
+                <div class="col-2">{{ position.quantity|default:'-' }}</div>
+                <div class="col-2">{{ position.equipment.power|floatformat:2|default:'-' }}</div>
+                <div class="col-2">{{ position.equipment.weight|default:'-' }}</div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+
+{% endblock main_content %}
+

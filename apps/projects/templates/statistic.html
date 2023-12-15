@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% load equipment_types %}
+
+{% block page_h1 %}Statistic{% endblock page_h1 %}
+
+{% block before_content %}
+
+    <div id="sideBarFilter">
+        <div id="filters">
+            <form method="get" id="filterForm">
+                <h3 class="text-center">Filters</h3>
+                {{ filter.form }}
+                <button type="submit" class="btn btn-primary mb-3 mt-2 w-100">Filter</button>
+                <button type="button" class="btn btn-danger w-100"
+                        onclick="window.location.href = {% url 'statistic' %}">Clear
+                </button>
+            </form>
+        </div>
+        <div id="chevron" onclick="showFilters()">
+            <span>
+                <i class="bi bi-funnel"></i>
+            </span>
+        </div>
+    </div>
+
+    <div id="sideBarDownload">
+        <form method="post" id="downloadCSV">
+            {% csrf_token %}
+        </form>
+        <button type="submit" form="downloadCSV">
+            <i class="bi bi-filetype-csv"></i>
+        </button>
+    </div>
+
+{% endblock before_content %}
+
+{% block main_content %}
+
+    <div class="row table-head">
+            <div class="col-3">Equipment type</div>
+            <div class="col-1">Projects, pcs</div>
+            <div class="col-1">Positions, pcs</div>
+            <div class="col-1">Quantity, pcs</div>
+            <div class="col-2">Avg price, USD</div>
+            <div class="col-2">Min price, USD </div>
+            <div class="col-2">Max price, USD</div>
+        </div>
+    {% for type in data %}
+        <div class="row bg-white">
+            <div class="col-3">{% get_equipment_name type.type %}</div>
+            <div class="col-1">{{ type.projects }}</div>
+            <div class="col-1">{{ type.count }}</div>
+            <div class="col-1">{{ type.quantity }}</div>
+            <div class="col-2">{{ type.avg_price|floatformat:2 }}</div>
+            <div class="col-2">{{ type.min_price|floatformat:2 }}</div>
+            <div class="col-2">{{ type.max_price|floatformat:2 }}</div>
+        </div>
+    {% endfor %}
+
+
+{% endblock main_content %}
+
+{% block modals %}
+
+{% endblock modals %}
+
+{% block extra_scriprts %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.3/dist/umd/popper.min.js"
+            integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/js/bootstrap.min.js"
+            integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+            crossorigin="anonymous"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+    <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/i18n/defaults-*.min.js"></script>
+{% endblock extra_scriprts %}
+

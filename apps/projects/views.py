@@ -1,12 +1,49 @@
+import csv
+from datetime import datetime
+
 from django.contrib.auth.views import LoginView
-from django.http import HttpResponseRedirect, JsonResponse
-from django.shortcuts import redirect, render, get_object_or_404
+from django.db.models import (
+    Sum,
+    Count,
+    Avg,
+    Max,
+    Min,
+    F,
+    ExpressionWrapper,
+    DecimalField,
+)
+from django.http import (
+    HttpResponseRedirect,
+    JsonResponse, HttpResponse,
+)
+from django.shortcuts import (
+    redirect,
+    render,
+)
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView, TemplateView
+from django.views.generic import (
+    ListView,
+    DetailView,
+    CreateView,
+    DeleteView,
+    UpdateView,
+    TemplateView,
+)
 
 from config.constants import EQUIPMENT_TYPES
-from .models import Location, Equipment, Position, TechnologicalNode, Complectation, Manufacture
+from .filters import (
+    EquipmentFilter,
+    EquipmentStatisticFilter
+)
+from .models import (
+    Location,
+    Equipment,
+    Position,
+    TechnologicalNode,
+    Complectation,
+    Manufacture,
+)
 from .forms import (
     CreatePositionForm,
     CreateLocationForm,
@@ -154,7 +191,7 @@ class CreateNodeView(CreateView):
 
     def post(self, request, *args, **kwargs):
         print(request.POST)
-        form = self.form_class(request.POST, request.FILES)
+        form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
 
@@ -176,10 +213,12 @@ class CreateEquipmentView(CreateView):
             form.instance.complectation = complectation
             form.instance.save()
             position.equipment = form.instance
+            position.status = Position.DONE
             position.save()
 
         print(position.technological_node.location.slug)
-        return HttpResponseRedirect(reverse_lazy('project_details', kwargs={'slug': position.technological_node.location.slug}))
+        return HttpResponseRedirect(
+            reverse_lazy('project_details', kwargs={'slug': position.technological_node.location.slug}))
 
 
 class RemoveEquipmentView(DeleteView):
@@ -189,6 +228,14 @@ class RemoveEquipmentView(DeleteView):
     def get_success_url(self):
         self.success_url = self.request.META.get('HTTP_REFERER')
         return super().get_success_url()
+
+    def form_valid(self, form):
+        equipment_pk = self.kwargs.get('pk')
+        position = Position.objects.filter(equipment__pk=equipment_pk).first()
+        position.status = Position.NOT_STARTED
+        position.save()
+
+        return super().form_valid(form)
 
 
 class ManufacturesListView(ListView):
@@ -234,11 +281,53 @@ class EquipmentList(ListView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        filtered_queryset = EquipmentFilter(self.request.GET, queryset=self.get_queryset())
+        print(self.request.GET)
+
+        context['equipments'] = filtered_queryset.qs
+        context['filter'] = filtered_queryset
         context['locations'] = Location.objects.all()
         context['nodes'] = TechnologicalNode.objects.all().order_by('node_number', 'name')
         context['marks'] = Equipment.objects.all().values('name').distinct().order_by('name')
 
         return context
+
+    def post(self, request, *args, **kwargs):
+        filtered_queryset = EquipmentFilter(request.GET, queryset=self.get_queryset()).qs
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="exported_data.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'Country',
+            'City',
+            'Node number',
+            'Technological node',
+            'Position',
+            'Quantity, pcs',
+            'Mark',
+            'Power, kW',
+            'Weight, kg',
+            'Price, USD',
+            'Created',
+        ])
+
+        for item in filtered_queryset:
+            writer.writerow([
+                item.position.technological_node.location.country,
+                item.position.technological_node.location.city,
+                item.position.technological_node.node_number,
+                item.position.technological_node.name,
+                item.position.name,
+                item.position.quantity,
+                item.name,
+                item.power,
+                item.weight,
+                item.price,
+                item.created_at.strftime('%Y.%m.%d %H:%M:%S')
+            ])
+
+        return response
 
 
 class RawSqlView(TemplateView):
@@ -256,3 +345,111 @@ class RawSqlQuery(View):
             return JsonResponse({'result': row, 'headers': [desc[0] for desc in cursor.description]}, status=200)
 
         return JsonResponse({}, status=400)
+
+
+class StatisticView(TemplateView):
+    template_name = 'statistic.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = (Equipment.objects.all()
+        .select_related('position')
+        .values('type')
+        .annotate(
+            count=Count('id'),
+            avg_price=Avg('price'),
+            max_price=Max('price'),
+            min_price=Min('price'),
+            quantity=Sum('position__quantity'),
+            projects=Count('position__technological_node__location', distinct=True)
+        ))
+
+        filtered_queryset = EquipmentStatisticFilter(self.request.GET, queryset=data)
+        context['filter'] = filtered_queryset
+        context['data'] = filtered_queryset.qs
+        return context
+
+    def post(self, request, *args, **kwargs):
+        filtered_queryset = self.get_context_data()['data']
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="exported_data.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow([
+            'Equipment type',
+            'Projects, pcs',
+            'Positions, pcs',
+            'Equipment quantity, pcs',
+            'Average price, USD',
+            'Max price, USD',
+            'Min price, USD',
+        ])
+
+        for item in filtered_queryset:
+            writer.writerow([
+                item['type'],
+                item['projects'],
+                item['count'],
+                item['quantity'],
+                item['avg_price'],
+                item['max_price'],
+                item['min_price'],
+            ])
+
+        return response
+
+
+class ProjectsSpecificationView(TemplateView):
+    template_name = 'specification.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project_slug = self.kwargs['slug']
+        project = Location.objects.get(slug=project_slug)
+        technological_nodes = (TechnologicalNode.objects
+                               .filter(location=project)
+                               .prefetch_related('positions')
+                               .annotate(
+                                    power_total=Sum('positions__equipment__power'),
+                                    weight_total=Sum('positions__equipment__weight'),
+                                    quantity_total=Sum('positions__quantity')
+                                )
+                               .order_by('node_number'))
+
+        context['technological_nodes'] = technological_nodes
+        context['project'] = project
+
+        return context
+
+
+class ProjectsPriceView(TemplateView):
+    template_name = 'price.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project_slug = self.kwargs['slug']
+        project = Location.objects.filter(slug=project_slug).prefetch_related(
+            'nodes',
+            'nodes__positions'
+        ).annotate(
+            equipment_count=Sum('nodes__positions__quantity'),
+            price_total=ExpressionWrapper(
+                Sum(F('nodes__positions__equipment__price') * F('nodes__positions__quantity')),
+                output_field=DecimalField()
+            ),
+        ).first()
+        technological_nodes = (TechnologicalNode.objects
+                               .filter(location=project)
+                               .prefetch_related('positions')
+                               .annotate(
+                                    quantity_total=Sum('positions__quantity'),
+                                    price_total=ExpressionWrapper(
+                                        Sum(F('positions__equipment__price') * F('positions__quantity')),
+                                        output_field=DecimalField()
+                                    ),
+                                )
+                               .order_by('node_number'))
+        context['technological_nodes'] = technological_nodes
+        context['project'] = project
+
+        return context

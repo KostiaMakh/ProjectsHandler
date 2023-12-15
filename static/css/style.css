@@ -327,4 +327,89 @@ body {
   transition: 400ms;
 }
 
+#sideBarFilter {
+  display: flex;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 99;
+}
+
+#sideBarDownload {
+  position: fixed;
+  right: 0;
+  top: 100px;
+  padding: 0;
+  z-index: 99;
+}
+#sideBarDownload button {
+  width: 40px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  background-color: #a3cfbb;
+  border: 1px solid #198754;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+#sideBarDownload button:hover {
+  color: white;
+  background-color: #198754;
+  border-color: #198754;
+  transition: all 400ms;
+}
+
+#filters {
+  width: 0;
+  height: 100%;
+  padding-top: 30px;
+  background-color: white;
+  border-right: 1px solid gray;
+  overflow: scroll;
+}
+#filters::-webkit-scrollbar {
+  display: none;
+}
+
+#chevron {
+  position: relative;
+  height: 100vh;
+}
+#chevron span {
+  position: absolute;
+  top: 100px;
+  left: -1px;
+  width: 40px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 22px;
+  background-color: white;
+  border: 1px solid gray;
+  border-left-color: white;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+
+#contentHider {
+  display: none;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: lightgray;
+  backdrop-filter: blur(5px);
+  z-index: 98 !important;
+  transition: all 430ms;
+}
+
+nav {
+  z-index: 97 !important;
+  border-bottom: 2px solid lightgrey;
+}
+
 /*# sourceMappingURL=style.css.map */

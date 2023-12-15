@@ -37,7 +37,8 @@ body {
 
   &:hover {
     background-color: #5dba5d;
-    i{
+
+    i {
       color: white;
     }
   }
@@ -215,14 +216,17 @@ body {
 .equipment-line {
   display: flex;
   position: relative;
-  a{
+
+  a {
     color: black;
   }
-  i{
+
+  i {
     position: relative;
-    top:-4px;
+    top: -4px;
     right: 4px;
   }
+
   button {
     position: absolute;
     height: 20px;
@@ -325,9 +329,9 @@ body {
   padding: 20px 30px 30px;
 }
 
-.add-equipment{
+.add-equipment {
 
-  a{
+  a {
     display: flex;
     width: 100%;
     justify-content: center;
@@ -336,32 +340,129 @@ body {
     border: 3px rgba(96, 190, 96, 0.7) dotted;
     border-radius: 3px;
     background-color: rgba(96, 190, 96, 0.18);
-    i{
+
+    i {
       color: grey;
 
     }
   }
 }
 
-#headerBlock{
+#headerBlock {
   position: relative;
-  #logoutBtn{
+
+  #logoutBtn {
     height: 30px;
     width: 30px;
     position: absolute;
-    top:50%;
+    top: 50%;
     margin-top: -15px;
     right: 30px;
     text-decoration: none;
     color: grey;
     padding: 0;
-    i{
+
+    i {
       font-size: 20px;
     }
-    &:hover{
+
+    &:hover {
       transform: scale(1.05);
       color: $mainColorBtn;
       transition: $defaultTransition;
     }
   }
+}
+
+#sideBarFilter {
+  display: flex;
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 99;
+}
+
+#sideBarDownload {
+  position: fixed;
+  right: 0;
+  top: 100px;
+  padding: 0;
+  z-index: 99;
+
+  button {
+    width: 40px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    background-color: #a3cfbb;
+    border: 1px solid #198754;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+
+    &:hover{
+      color: white;
+      background-color: #198754;
+      border-color: #198754;
+      transition: all $defaultTransition;
+    }
+  }
+}
+
+#filters {
+  width: 0;
+  height: 100%;
+  padding-top: 30px;
+  background-color: white;
+  border-right: 1px solid gray;
+  overflow: scroll;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+#filterForm {
+
+}
+
+#chevron {
+  position: relative;
+  height: 100vh;
+
+  span {
+    position: absolute;
+    top: 100px;
+    left: -1px;
+    width: 40px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 22px;
+    background-color: white;
+    border: 1px solid gray;
+    border-left-color: white;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}
+
+#contentHider {
+  display: none;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: lightgray;
+  backdrop-filter: blur(5px);
+  z-index: 98 !important;
+  transition: all 430ms;
+}
+
+nav {
+  z-index: 97 !important;
+  border-bottom: 2px solid lightgrey;
 }
