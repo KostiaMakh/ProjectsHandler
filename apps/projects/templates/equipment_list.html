@@ -1,5 +1,7 @@
 {% extends 'base_fullscreen.html' %}
 
+{% load equipment_types %}
+
 {% block page_h1 %}Equipment{% endblock page_h1 %}
 
 {% block before_content %}
@@ -59,19 +61,60 @@
     {#        </select>#}
     {#    </div>#}
 
-    <div class="row table-head">
-        <div class="col-1">Country</div>
-        <div class="col-1">City</div>
-        <div class="col-1">Node number</div>
-        <div class="col-1">Node</div>
-        <div class="col-1">Position</div>
-        <div class="col-1">Quantity, pcs</div>
-        <div class="col-2" onclick="window.location.href = window.location.href + '?order_by=name'">Mark</div>
-        <div class="col-1">Power, kW</div>
-        <div class="col-1">Weight, kg</div>
-        <div class="col-1">Price, USD</div>
-        <div class="col-1">Created</div>
-    </div>
+    {% with request.GET.order_by as order %}
+
+
+        <div class="row table-head">
+            <div class="col-1">Country
+                {% if order == '-position__technological_node__location__country' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'position__technological_node__location__country' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-1">City
+                {% if order == '-position__technological_node__location__city' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'position__technological_node__location__city' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-1">Node number</div>
+            <div class="col-1">Node</div>
+            <div class="col-1">Position</div>
+            <div class="col-1">Quantity, pcs</div>
+            <div class="col-1">Type</div>
+            <div class="col-2">Mark
+                {% if order == '-name' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'name' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-1">Power, kW
+                {% if order == '-power' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'power' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-1">Weight, kg
+                {% if order == '-weight' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'weight' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-1">Created
+                {% if order == '-created_at' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'created_at' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+        </div>
+
+    {% endwith %}
 
     {% for equipment in equipments %}
         <div class="row bg-white">
@@ -81,10 +124,10 @@
             <div class="col-1">{{ equipment.position.technological_node.name }}</div>
             <div class="col-1">{{ equipment.position.name }}</div>
             <div class="col-1">{{ equipment.position.quantity }}</div>
+            <div class="col-1">{% get_equipment_name equipment.type %}</div>
             <div class="col-2">{{ equipment.name }}</div>
             <div class="col-1">{{ equipment.power }}</div>
             <div class="col-1">{{ equipment.weight }}</div>
-            <div class="col-1">{{ equipment.price }}</div>
             <div class="col-1">{{ equipment.created_at|date:"Y.m.d H:i" }}</div>
         </div>
     {% endfor %}

@@ -1,6 +1,7 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css");
 body {
   background-color: whitesmoke;
+  padding-bottom: 30px;
 }
 
 .main-content-sec {
@@ -426,6 +427,10 @@ body {
 nav {
   z-index: 97 !important;
   border-bottom: 2px solid lightgrey;
+}
+
+#myChart {
+  height: 450px !important;
 }
 
 /*# sourceMappingURL=style.css.map */

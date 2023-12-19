@@ -29,6 +29,34 @@ services:
     expose:
       - 5432
 
+  celery:
+    build:
+      context: .
+    env_file: .env
+    command: celery -A ecopol worker -l info -P threads
+    expose:
+      - 6379
+    depends_on:
+      - redis
+      - db
+
+  redis:
+    image: redis
+    restart: on-failure
+
+  flower:
+    build: ./
+    command: celery -A celery flower
+    volumes:
+      - ./flower:/data
+    working_dir: /data
+    env_file:
+      - .env
+    ports:
+      - 5555:5555
+    depends_on:
+      - celery
+      - redis
 
   adminer:
     image: adminer

@@ -65,18 +65,19 @@ class EquipmentFilter(django_filters.FilterSet):
         fields=(
             ('created_at', 'created_at'),
             ('name', 'name'),
-            ('manufacture__name', 'manufacture__name'),
-            ('type', 'type'),
             ('power', 'power'),
             ('weight', 'weight'),
+            ('position__technological_node__location__country', 'position__technological_node__location__country'),
+            ('position__technological_node__location__city', 'position__technological_node__location__city')
         ),
         field_labels={
             'created_at': 'Created date',
             'name': 'Mark',
-            'manufacture__name': 'Manufacture',
-            'type': 'Equipment type',
             'power': 'Power',
             'weight': 'Weight',
+            'position__technological_node__location__country': 'Country',
+            'position__technological_node__location__city': 'City'
+
         },
         label='Order by',
     )

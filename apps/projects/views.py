@@ -11,7 +11,9 @@ from django.db.models import (
     F,
     ExpressionWrapper,
     DecimalField,
+    DateTimeField,
 )
+from django.db.models.functions import TruncMonth
 from django.http import (
     HttpResponseRedirect,
     JsonResponse, HttpResponse,
@@ -52,6 +54,7 @@ from .forms import (
     CreateManufactureForm,
     UpdateCompensationForm,
 )
+from .tasks import send_report
 
 
 class CustomLoginView(LoginView):
@@ -123,9 +126,7 @@ class EquipmentUpdateView(UpdateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         equipment_slug = self.kwargs.get('slug')
-        print(equipment_slug)
         equipment = Equipment.objects.get(slug=equipment_slug)
         equipment_form = CreateEquipmentForm(request.POST, instance=equipment)
         complectation_form = UpdateCompensationForm(request.POST, instance=equipment.complectation)
@@ -147,6 +148,10 @@ class CreatePositionView(CreateView):
         form = CreatePositionForm(request.POST)
         if form.is_valid():
             form.save()
+            send_report.delay(
+                subject='Position created',
+                message=f'Position {form.cleaned_data["name"]} created',
+            )
 
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
@@ -158,7 +163,14 @@ class DestroyPositionView(DeleteView):
 
     def post(self, request, *args, **kwargs):
         position_pk = kwargs.get('pk')
+        position = Position.objects.filter(pk=position_pk).first()
         equipment = Equipment.objects.select_related('position').filter(position__pk=position_pk)
+
+        send_report.delay(
+            subject='Position deleted',
+            message=f'Position {position.name} deleted',
+        )
+
         if equipment:
             equipment.delete()
 
@@ -209,14 +221,18 @@ class CreateEquipmentView(CreateView):
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+
             complectation = Complectation.objects.create()
             form.instance.complectation = complectation
             form.instance.save()
             position.equipment = form.instance
             position.status = Position.DONE
             position.save()
+            send_report.delay(
+                subject='Equipment created',
+                message=f'Equipment {form.cleaned_data["name"]} created',
+            )
 
-        print(position.technological_node.location.slug)
         return HttpResponseRedirect(
             reverse_lazy('project_details', kwargs={'slug': position.technological_node.location.slug}))
 
@@ -231,9 +247,15 @@ class RemoveEquipmentView(DeleteView):
 
     def form_valid(self, form):
         equipment_pk = self.kwargs.get('pk')
+        equipment = Equipment.objects.filter(pk=equipment_pk).first()
         position = Position.objects.filter(equipment__pk=equipment_pk).first()
         position.status = Position.NOT_STARTED
         position.save()
+
+        send_report.delay(
+            subject='Equipment deleted',
+            message=f'Equipment {equipment.name} deleted',
+        )
 
         return super().form_valid(form)
 
@@ -410,10 +432,10 @@ class ProjectsSpecificationView(TemplateView):
                                .filter(location=project)
                                .prefetch_related('positions')
                                .annotate(
-                                    power_total=Sum('positions__equipment__power'),
-                                    weight_total=Sum('positions__equipment__weight'),
-                                    quantity_total=Sum('positions__quantity')
-                                )
+            power_total=Sum('positions__equipment__power'),
+            weight_total=Sum('positions__equipment__weight'),
+            quantity_total=Sum('positions__quantity')
+        )
                                .order_by('node_number'))
 
         context['technological_nodes'] = technological_nodes
@@ -442,14 +464,29 @@ class ProjectsPriceView(TemplateView):
                                .filter(location=project)
                                .prefetch_related('positions')
                                .annotate(
-                                    quantity_total=Sum('positions__quantity'),
-                                    price_total=ExpressionWrapper(
-                                        Sum(F('positions__equipment__price') * F('positions__quantity')),
-                                        output_field=DecimalField()
-                                    ),
-                                )
+            quantity_total=Sum('positions__quantity'),
+            price_total=ExpressionWrapper(
+                Sum(F('positions__equipment__price') * F('positions__quantity')),
+                output_field=DecimalField()
+            ),
+        )
                                .order_by('node_number'))
         context['technological_nodes'] = technological_nodes
         context['project'] = project
 
+        return context
+
+
+class StatisticByMonthView(TemplateView):
+    template_name = 'statistic_by_month.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        data = (Equipment.objects.all()
+                .select_related('position')
+                .annotate(month=TruncMonth('created_at', output_field=DateTimeField()))
+                .values('month')
+                .annotate(quantity=Sum('position__quantity'))
+                .order_by('month'))
+        context['data'] = data
         return context

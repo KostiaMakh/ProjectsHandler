@@ -25,11 +25,12 @@ from .views import (
     StatisticView,
     ProjectsSpecificationView,
     ProjectsPriceView,
-
+    StatisticByMonthView,
 )
 
 urlpatterns = [
     path('statistic/', StatisticView.as_view(), name='statistic'),
+    path('statistic-by-month/', StatisticByMonthView.as_view(), name='statistic_by_month'),
     path('raw-sql/', RawSqlView.as_view(), name='raw_sql'),
     path('raw-sql-query/', RawSqlQuery.as_view(), name='raw_sql-query'),
     path('create-position/', CreatePositionView.as_view(), name='create_position'),

@@ -36,16 +36,59 @@
 {% endblock before_content %}
 
 {% block main_content %}
-
-    <div class="row table-head">
-            <div class="col-3">Equipment type</div>
-            <div class="col-1">Projects, pcs</div>
-            <div class="col-1">Positions, pcs</div>
-            <div class="col-1">Quantity, pcs</div>
-            <div class="col-2">Avg price, USD</div>
-            <div class="col-2">Min price, USD </div>
-            <div class="col-2">Max price, USD</div>
+    {% with request.GET.order_by as order %}
+        <div class="row table-head">
+            <div class="col-3">Equipment type
+                {% if order == '-type' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'type' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-1">Projects, pcs
+                {% if order == '-projects' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'projects' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-1">Positions, pcs
+                {% if order == '-count' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'count' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-1">Quantity, pcs
+                {% if order == '-quantity' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'quantity' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-2">Avg price, USD
+                {% if order == '-avg_price' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'avg_price' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-2">Min price, USD
+                {% if order == '-min_price' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'min_price' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
+            <div class="col-2">Max price, USD
+                {% if order == '-max_price' %}
+                    <i class="bi bi-caret-down-fill"></i>
+                {% elif order == 'max_price' %}
+                    <i class="bi bi-caret-up-fill"></i>
+                {% endif %}
+            </div>
         </div>
+    {% endwith %}
     {% for type in data %}
         <div class="row bg-white">
             <div class="col-3">{% get_equipment_name type.type %}</div>
